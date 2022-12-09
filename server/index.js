@@ -14,8 +14,13 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
+io.on("connection", (socket) => { // 연결이 되면 이름 랜덤부여
   console.log(`User Connected : ${socket.id}`);
+
+  socket.on("create_name", () => {
+    let name = "jeon";
+    socket.emit("receive_name", name);
+  })
 
   socket.on("join_room", (data) => {
     socket.join(data);
