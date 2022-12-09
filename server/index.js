@@ -10,21 +10,21 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
-    method: ["GET", "POST"],
+    methods: ["GET", "POST"],
   },
 });
 
-io.on("connection", (socket) => { // 연결이 되면 이름 랜덤부여
-  console.log(`User Connected : ${socket.id}`);
-
-  socket.on("create_name", () => {
-    let name = "jeon";
-    socket.emit("receive_name", name);
-  })
+io.on("connection", (socket) => {
+  console.log(`User Connected: ${socket.id}`);
 
   socket.on("join_room", (data) => {
     socket.join(data);
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
+  });
+
+  socket.on("create_name", () => {
+    let name = "juju";
+    socket.emit("receive_name", name);
   });
 
   socket.on("send_message", (data) => {
@@ -32,10 +32,10 @@ io.on("connection", (socket) => { // 연결이 되면 이름 랜덤부여
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected", socket.id);
+    console.log("User Disconnected", socket.id);
   });
 });
 
 server.listen(3001, () => {
-  console.log("SERVER Running!");
+  console.log("SERVER RUNNING");
 });
