@@ -2,52 +2,22 @@ import "./App.css";
 import io from "socket.io-client";
 import { useState, useEffect } from "react";
 import Chat from "./Chat";
+import namer from "korean-name-generator";
 
 const socket = io.connect("http://localhost:3001");
 
 function App() {
-  const [username, setUsername] = useState("");
-  const [room, setRoom] = useState("");
   const [showChat, setShowChat] = useState(false);
-
-  const joinRoom = () => {
-    if (username !== "" && room !== "") {
-      socket.emit("join_room", room);
-      setShowChat(true);
-    }
-  };
-
-  // useEffect(() => {
-  //   // make name emit, 백에서 이름 만들기 프론트로 다시 보내기
-  //   socket.emit("create_name"); //
-  //   socket.on("receive_name", (name) => {
-  //     setUsername(name);
-  //   });
-  // }, []);
-
+  const settledRoom = "1";
+  const generatedUserName = namer.generate(true);
+  useEffect(() => {
+    socket.emit("join_room", settledRoom);
+    setShowChat(true);
+  }, []);
   return (
     <div className="App">
-      {!showChat ? (
-        <div className="joinChatContainer">
-          <h3>Join A Chat</h3>
-          <input
-            type="text"
-            placeholder="John..."
-            onChange={(event) => {
-              setUsername(event.target.value);
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Room ID..."
-            onChange={(event) => {
-              setRoom(event.target.value);
-            }}
-          />
-          <button onClick={joinRoom}>Join A Room</button>
-        </div>
-      ) : (
-        <Chat socket={socket} username={username} room={room} />
+      {showChat && (
+        <Chat socket={socket} username={generatedUserName} room={settledRoom} />
       )}
     </div>
   );
